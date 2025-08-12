@@ -1,5 +1,4 @@
-/*
-
+/*  
     Laboratorio No. 3 - Recursive Descent Parsing
     CC4 - Compiladores
 
@@ -59,22 +58,6 @@ import java.io.IOException;
         }
     }
 
-
-    /*
-
-        ****************** LEER ********************
-
-        - %public es para que la clase sea publica y se pueda utilizar en otros paquetes
-        - %class Lexer es para que la clase generada se llame "Lexer"
-        - %function nextToken el lexer generado tendra una funcion nextToken() para obtener
-           el siguiente token del input
-        - %type Token es para que la clase tome en cuenta que vamos a devolver un objeto Token
-
-        todo esto no se modifica por ningun motivo :)
-
-        *** Despues de "%type Token" pueden definir sus ER o tokens, van a encontrar
-        el ejemplo para SEMI (";") y para WHITESPACE
-    */
 %}
 
 %public
@@ -82,34 +65,30 @@ import java.io.IOException;
 %function nextToken
 %type Token
 
-SEMI = ";" // Definan aqui sus Tokens/ER por ejemplo: "el token SEMI"
-WHITE = (" "|\t|\n)
-PLUS = "+"
-MINUS = "-"
-MULT = "*"
-DIV = "/"
-MOD = "%"
-EXP = "^"
-LPAREN = "("
-RPAREN = ")"
-NUMBER = [0-9]*
-ERROR = "error"
-UNARY = "~"
+SEMI    = ";"
+WHITE   = [ \t\n\r]+
+PLUS    = "+"
+MINUS   = "-"
+MULT    = "*"
+DIV     = "/"
+MOD     = "%"
+EXP     = "[\\^]"     /* Escapamos el ^ con doble barra para JLex */
+LPAREN  = "("
+RPAREN  = ")"
+NUMBER  = [0-9]+(\.[0-9]+)?
+
 %%
 
-<YYINITIAL>{SEMI}   { return new Token(Token.SEMI);   }
-<YYINITIAL>{WHITE}  { /* NO HACER NADA */             }
-<YYINITIAL>{PLUS}   { return new Token(Token.PLUS);   }
-<YYINITIAL>{MINUS}  { return new Token(Token.MINUS);  }
-<YYINITIAL>{MULTI}  { return new Token(Token.MULT);   }
-<YYINITIAL>{DIV}    { return new Token(Token.DIV);    }
-<YYINITIAL>{MOD}    { return new Token(Token.MOD);    }
-<YYINITIAL>{EXP}    { return new Token(Token.EXP);    }
-<YYINITIAL>{LPAREN}    { return new Token(Token.LPAREN);    }
-<YYINITIAL>{RPAREN}    { return new Token(Token.RPAREN);    }
-<YYINITIAL>{NUMBER}    { return new Token(Token.NUMBER);    }
+<YYINITIAL>{SEMI}   { return new Token(Token.SEMI); }
+<YYINITIAL>{WHITE}  { /* ignorar espacios */       }
+<YYINITIAL>{PLUS}   { return new Token(Token.PLUS); }
+<YYINITIAL>{MINUS}  { return new Token(Token.MINUS); }
+<YYINITIAL>{MULT}   { return new Token(Token.MULT); }
+<YYINITIAL>{DIV}    { return new Token(Token.DIV); }
+<YYINITIAL>{MOD}    { return new Token(Token.MOD); }
+<YYINITIAL>{EXP}    { return new Token(Token.EXP); }
+<YYINITIAL>{LPAREN} { return new Token(Token.LPAREN); }
+<YYINITIAL>{RPAREN} { return new Token(Token.RPAREN); }
+<YYINITIAL>{NUMBER} { return new Token(Token.NUMBER, yytext()); }
 
-
-
-<YYINITIAL>.        { return new Token(Token.ERROR);
-                      /* todo lo demas es ERROR */ }
+<YYINITIAL>.        { return new Token(Token.ERROR); }
